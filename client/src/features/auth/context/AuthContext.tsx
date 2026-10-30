@@ -1,4 +1,4 @@
-import { createContext, useState, type ReactNode } from "react";
+import { createContext, useState, type ReactNode, useContext } from "react";
 import type { User } from "../types/auth.types";
 
 interface AuthContextType {
@@ -10,18 +10,27 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // 🔴 Todo:
-// 1. implement the login and logout functions to update the user state, and pass { user, login, logout } as the Provider's value.
-// 2. wrap the AuthProvider around appropriate components in the app (see main.tsx) to provide global state management for authentication.
+// 1. implement the login and logout functions to update the user state, and pass 
+// { user, login, logout } as the Provider's value.
+// 2. wrap the AuthProvider around appropriate components in the app (see main.tsx)
+//  to provide global state management for authentication.
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const login = (user: User) => setUser(user);
+  const logout = () => setUser(null);
 
   return (
-    <AuthContext.Provider value={{ user: null, login: () => {}, logout: () => {} }}>
+    <AuthContext.Provider value={{ user, login: () => {login}, logout: () => {logout} }}>
       {children}
     </AuthContext.Provider>
   );
 }
 
 // 🔴 Todo: finish the useAuth hook
-export function useAuth() {}
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if(!context || context===undefined){
+    throw new Error("useAuth is not wrapped in AuthProvider");
+  }
+}

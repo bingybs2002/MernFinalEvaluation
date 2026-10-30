@@ -2,6 +2,8 @@ import { useState, useMemo } from "react";
 import type { User, UserRole } from "../../types/user.types";
 import styles from "./UserList.module.css";
 
+const API_URL = 'http://localhost:4000/api';
+
 export function UserList() {
   // 🔴 TODO (bonus):
   // 1. Fetch GET http://localhost:4000/api/users with axios inside useEffect, and store response.data.data with setUsers
