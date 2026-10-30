@@ -8,7 +8,7 @@ import { LoadingSpinner } from "../../../../shared/components/LoadingSpinner/Loa
 import type { Ticket } from "../../../tickets/types/ticket.types";
 import type { ApiResponse } from "../../../../shared/types/api.types";
 
-export async function Dashboard() {
+export function Dashboard() {
   // 🔴 TODO:
   // 1. Fetch GET /stats and GET /stats/recent with axios (base URL: http://localhost:4000/api)
   // 2. Display the stats and recent activity data (pass them to StatsPanel and RecentActivity)
