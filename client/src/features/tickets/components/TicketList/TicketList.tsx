@@ -115,24 +115,6 @@ export function TicketList() {
                     )
                   )
                 )}
-            <TicketCard
-              ticket={{
-                id: 1,
-                title: "title",
-                description: "description",
-                status: "open",
-                priority: "urgent",
-                category: "bug",
-                reporterName: "reporter name",
-                reporterEmail: "reporter email",
-                assigneeId: null,
-                slaDeadline: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
-                resolvedAt: null,
-                closedAt: null,
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
-              }}
-            />
           </div>
 
           {response.pagination.totalPages > 1 && (

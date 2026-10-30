@@ -24,7 +24,7 @@ const API_URL = 'http://localhost:4000/api';
 
   const handleSubmit = async(e: FormEvent) => {
     e.preventDefault();
-    setError(null);
+    setError('');
 
     if(username.trim()==="" || password.trim() === "") {
       setError("Username and password are required");
@@ -32,7 +32,7 @@ const API_URL = 'http://localhost:4000/api';
     }
     setSubmit(true);
     try{
-      const res = await axios.get<ApiResponse<User>>(`${API_URL}/users/login`,{
+      const res = await axios.post<ApiResponse<User>>(`${API_URL}/users/login`,{
         username,
         password
       })

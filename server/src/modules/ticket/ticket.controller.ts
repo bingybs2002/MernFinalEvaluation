@@ -148,7 +148,7 @@ export const updateTicket = async (req: Request, res: Response, next: NextFuncti
     // 🔴 TODO: Get the ticket ID from params with parseId, validate req.body 
     const ticketId = parseId(req.params.id);
     // with validateTicketBody (partial mode), 
-    const validate = validateTicketBody(req.params.id, true)
+    const validate = validateTicketBody(req.body, true)
     // update using the service, return the result
     const result =  await ticketService.updateTicket(ticketId, validate)
     res.json(result)
@@ -171,7 +171,7 @@ export const updateTicketStatus = async (req: Request, res: Response, next: Next
     }
     // update using the service, return the result
     const updateTicket = await ticketService.updateTicketStatus(ticketId, status)
-    return res.status(201).json(updateTicket)
+    return res.status(200).json(updateTicket)
     //throw new NotImplementedError('TODO: Implement updateTicketStatus in ticket.controller.ts');
   } catch (error) {
     next(error);
@@ -184,7 +184,8 @@ export const deleteTicket = async (req: Request, res: Response, next: NextFuncti
     // return the result
     //throw new NotImplementedError('TODO: Implement deleteTicket in ticket.controller.ts');
     const ticketId = parseId(req.params.id);
-    await ticketService.deleteTicket(ticketId);
+    const result = await ticketService.deleteTicket(ticketId);
+    res.json(result)
   } catch (error) {
     next(error);
   }
