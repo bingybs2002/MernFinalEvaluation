@@ -1,11 +1,13 @@
 import * as ticketRepository from "./ticket.repository.js";
-import { NotFoundError, NotImplementedError } from "../../shared/errors.js";
+import { ConflictError, NotFoundError, NotImplementedError } from "../../shared/errors.js";
 import {
   TicketFilters,
   CreateTicketDto,
   UpdateTicketDto,
   TicketStatus,
+  STATUSES,
 } from "./ticket.types.js";
+import { timestamp } from "drizzle-orm/gel-core";
 
 const calculateSlaDeadline = (priority: string): Date => {
   const now = new Date();
@@ -77,7 +79,13 @@ export const getTicketById = async (id: number) => {
 //   message: "Ticket created successfully"
 // }
 export const createTicket = async (data: CreateTicketDto) => {
-  throw new NotImplementedError("TODO: Implement backend logic for: createTicket in ticket.service.ts");
+
+  const slaDeadline = calculateSlaDeadline(data.priority);
+  const newData = {
+    ...data,
+    slaDeadline: slaDeadline
+  }
+  return ticketRepository.create(newData);
 };
 
 // 🔴 TODO: Update an existing ticket
@@ -90,7 +98,11 @@ export const createTicket = async (data: CreateTicketDto) => {
 //   message: "Ticket updated successfully"
 // }
 export const updateTicket = async (id: number, data: UpdateTicketDto) => {
-  throw new NotImplementedError("TODO: Implement backend logic for: updateTicket in ticket.service.ts");
+  const ticket = await getTicketById(id);
+  if(!ticket){
+    throw NotFoundError;
+  }
+  return await ticketRepository.update(id, data);
 };
 
 // 🔴 TODO: Update ticket status
@@ -107,7 +119,23 @@ export const updateTicket = async (id: number, data: UpdateTicketDto) => {
 //   message: "Ticket status updated successfully"
 // }
 export const updateTicketStatus = async (id: number, newStatus: TicketStatus) => {
-  throw new NotImplementedError("TODO: Implement backend logic for: updateTicketStatus in ticket.service.ts");
+  const ticket = await getTicketById(id);
+  if(!ticket){
+    throw NotFoundError;
+  }
+  const oldTicketStatus = ticket.data.status as TicketStatus;
+  const validateTransition = isValidStatusTransition(oldTicketStatus, newStatus)
+  if(!validateTransition) throw ConflictError;
+  const date = new Date();
+  if(newStatus==="resolved"){
+  return await ticketRepository.updateStatus(id, newStatus, {resolvedAt: date})
+  }
+  if(newStatus==="closed"){
+  return await ticketRepository.updateStatus(id, newStatus, {closedAt: date})
+  }
+  else{
+    return await ticketRepository.updateStatus(id, newStatus, {})
+  }
 };
 
 // 🔴 TODO: Delete a ticket
@@ -119,5 +147,6 @@ export const updateTicketStatus = async (id: number, newStatus: TicketStatus) =>
 //   message: "Ticket deleted successfully"
 // }
 export const deleteTicket = async (id: number) => {
-  throw new NotImplementedError("TODO: Implement backend logic for: deleteTicket in ticket.service.ts");
+  await getTicketById(id);
+  await ticketRepository.deleteById(id);
 };
