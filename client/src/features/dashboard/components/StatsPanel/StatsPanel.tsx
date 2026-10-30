@@ -3,7 +3,7 @@ import styles from "./StatsPanel.module.css";
 import { formatDuration } from "../../../../shared/utils/formatters";
 // 🔴 TODO: Accept stats prop (DashboardStats) and use its properties dynamically
 // colors to use: #3498db, #e67e22, #2ecc71, #e74c3c
-export function StatsPanel({stats}: {stat: DashboardStats}) {
+export function StatsPanel({stats}: {stats: DashboardStats}) {
   return (
     <div className={styles.grid}>
       {/* // 🔴 TODO: refer to dashboard.png, render StatCard components */}

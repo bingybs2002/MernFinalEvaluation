@@ -21,7 +21,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = () => setUser(null);
 
   return (
-    <AuthContext.Provider value={{ user, login: () => {login}, logout: () => {logout} }}>
+    <AuthContext.Provider value={{ user, login, logout}}>
       {children}
     </AuthContext.Provider>
   );
@@ -32,5 +32,5 @@ export function useAuth() {
   const context = useContext(AuthContext);
   if(!context || context===undefined){
     throw new Error("useAuth is not wrapped in AuthProvider");
-  }
+  }return context;
 }
