@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
 import { StatusBadge } from "../../../../shared/components/Badges/Badges";
 import styles from "./RecentActivity.module.css";
+import type { Ticket } from "../../../tickets/types/ticket.types";
 
-// 🔴 TODO: Accept tickets prop (Ticket[]) and render each ticket as a link with title, updated date, and status badge
-export function RecentActivity() {
+// 🔴 TODO: Accept tickets prop (Ticket[]) and render each ticket as a link with title, 
+// updated date, and status badge
+export function RecentActivity({tickets}: {tickets: Ticket[]}) {
   return (
     <div className={styles.panel}>
       <h2 className={styles.title}>Recent Activity</h2>
