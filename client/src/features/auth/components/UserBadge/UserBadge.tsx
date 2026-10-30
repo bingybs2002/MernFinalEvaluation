@@ -5,8 +5,7 @@ import { useAuth } from "../../context/AuthContext";
 
 export function UserBadge() {
   // 🔴 Todo: get the user from the auth context.
-  const user = useAuth(); //change this line
-  const logout = useAuth();
+  const {user, logout} = useAuth(); //change this line
   // do not edit below this line
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);

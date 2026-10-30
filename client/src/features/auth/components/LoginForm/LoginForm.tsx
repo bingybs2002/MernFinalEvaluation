@@ -16,7 +16,7 @@ export function LoginForm() {
   //    (the dropdown closes by itself, because UserBadge re-renders once there is a user).
 const API_URL = 'http://localhost:4000/api';
 
-  const {login} = useAuth;
+  const {login} = useAuth();
   const [username, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
