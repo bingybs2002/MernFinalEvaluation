@@ -23,7 +23,7 @@ const API_URL = 'http://localhost:4000/api';
   const [submit, setSubmit] = useState(false);
 
   const handleSubmit = async(e: FormEvent) => {
-    e.preventDeafult();
+    e.preventDefault();
     setError(null);
 
     if(username.trim()==="" || password.trim() === "") {
@@ -54,7 +54,7 @@ const API_URL = 'http://localhost:4000/api';
           <input type="password" className={styles.input} />
         </div>
         {/* <div className={styles.error}>Wrong username or password</div> */}
-        <button type="submit" className={styles.submit}>
+        <button type="submit" className={styles.submit} onClick={login}>
           Login
         </button>
       </form>
