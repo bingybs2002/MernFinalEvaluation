@@ -79,13 +79,13 @@ export const getTicketById = async (id: number) => {
 //   message: "Ticket created successfully"
 // }
 export const createTicket = async (data: CreateTicketDto) => {
-
   const slaDeadline = calculateSlaDeadline(data.priority);
-  const newData = {
-    ...data,
-    slaDeadline: slaDeadline
-  }
-  return ticketRepository.create(newData);
+  const ticket = await ticketRepository.create({...data, slaDeadline: slaDeadline});
+  return{
+    success: true,
+    data: ticket,
+    message: "Ticket created successfully"
+   }
 };
 
 // 🔴 TODO: Update an existing ticket
@@ -98,11 +98,13 @@ export const createTicket = async (data: CreateTicketDto) => {
 //   message: "Ticket updated successfully"
 // }
 export const updateTicket = async (id: number, data: UpdateTicketDto) => {
-  const ticket = await getTicketById(id);
-  if(!ticket){
-    throw NotFoundError;
+  await getTicketById(id);
+  const ticket = await ticketRepository.update(id, data)
+  return {
+    success: true,
+    data: ticket,
+    message: "Ticket updated successfully"
   }
-  return await ticketRepository.update(id, data);
 };
 
 // 🔴 TODO: Update ticket status
@@ -126,16 +128,25 @@ export const updateTicketStatus = async (id: number, newStatus: TicketStatus) =>
   const oldTicketStatus = ticket.data.status as TicketStatus;
   const validateTransition = isValidStatusTransition(oldTicketStatus, newStatus)
   if(!validateTransition) throw ConflictError;
+
+  const timestamps: {resolvedAt?: Date | undefined; closedAt?: Date | undefined} = {}
   const date = new Date();
   if(newStatus==="resolved"){
-  return await ticketRepository.updateStatus(id, newStatus, {resolvedAt: date})
+    timestamps.resolvedAt=date;
   }
   if(newStatus==="closed"){
-  return await ticketRepository.updateStatus(id, newStatus, {closedAt: date})
+    timestamps.closedAt=date;
+  }else if(newStatus==="open"){
+    timestamps.closedAt = undefined;
+    timestamps.resolvedAt = undefined;
   }
-  else{
-    return await ticketRepository.updateStatus(id, newStatus, {})
+  const updatedTicket = await ticketRepository.updateStatus(id, newStatus, timestamps);
+  return {
+    success: true,
+    data: updatedTicket,
+    message: "Ticket status updated successfully"
   }
+
 };
 
 // 🔴 TODO: Delete a ticket
@@ -149,4 +160,9 @@ export const updateTicketStatus = async (id: number, newStatus: TicketStatus) =>
 export const deleteTicket = async (id: number) => {
   await getTicketById(id);
   await ticketRepository.deleteById(id);
+
+  return {
+    success: true,
+    message: "Ticket deleted successfully"
+  }
 };

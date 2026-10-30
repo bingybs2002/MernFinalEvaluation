@@ -150,8 +150,8 @@ export const updateTicket = async (req: Request, res: Response, next: NextFuncti
     // with validateTicketBody (partial mode), 
     const validate = validateTicketBody(req.params.id, true)
     // update using the service, return the result
-    const ticket = await ticketService.updateTicket(ticketId, req.body)
-    return res.status(202).json(ticket)
+    const result =  await ticketService.updateTicket(ticketId, validate)
+    res.json(result)
     //throw new NotImplementedError('TODO: Implement updateTicket in ticket.controller.ts');
   } catch (error) {
     next(error);
@@ -165,11 +165,9 @@ export const updateTicketStatus = async (req: Request, res: Response, next: Next
     const ticketId = parseId(req.params.id);
     // read `status` from req.body and make sure it is one of STATUSES (otherwise throw a ValidationError),
     //const ticketStatus
-    const status = req.body.status;
-    const ts = ["open", "in_progress", "resolved", "closed"] as const;
-    const statusCheck = status.includes(ts)
-    if(statusCheck === false){
-      return res.status(404).json(req.body.status)
+    const status = req.body?.status;
+    if(!STATUSES.includes(status)){
+      throw new ValidationError("Status is wrong.")
     }
     // update using the service, return the result
     const updateTicket = await ticketService.updateTicketStatus(ticketId, status)
