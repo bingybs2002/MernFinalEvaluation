@@ -7,6 +7,8 @@ import { TicketFilter } from "../TicketFilter/TicketFilter";
 import type { Ticket } from "../../types/ticket.types";
 import type { PaginatedResponse } from "../../../../shared/types/api.types";
 import styles from "./TicketList.module.css";
+import { resumeToPipeableStream } from "react-dom/server";
+import { useDebouncedValue } from "../../../../shared/hooks/useDebouncedValue";
 
 const API_URL = "http://localhost:4000/api";
 
@@ -32,6 +34,20 @@ export function TicketList() {
         // 🔴 TODO 1: GET `${API_URL}/tickets` with axios, passing the filters and page as query params
         // (search, status, priority, category, assigneeId, sortBy, sortOrder, page, limit: 10).
         // Then store response.data with setResponse.
+        const res = await axios.get<PaginatedResponse<Ticket>>(`${API_URL}/tickets}`,{
+          params:{
+            search,
+            status,
+            priority,
+            category,
+            assigneeId,
+            sortBy,
+            sortOrder,
+            page,
+            limit: 10,
+          }
+        })
+        setResponse(res.data);
       } catch (err: any) {
         setError(err.response?.data?.message || "Failed to fetch tickets");
       } finally {
@@ -91,6 +107,14 @@ export function TicketList() {
           <div className={styles.ticketGrid}>
             {/* 🔴 TODO 2: if response.data is empty show "No tickets found", otherwise render one TicketCard
                 for each ticket (give it a key and pass the ticket) */}
+                {response.data.length===0 ? (
+                  <p className={styles.noTickets}>No Ticket found</p>
+                   )   : (
+                    response.data.map((ticket)=>(
+                      <TicketCard key={ticket.id} ticket={ticket}/>
+                    )
+                  )
+                )}
             <TicketCard
               ticket={{
                 id: 1,
@@ -115,7 +139,7 @@ export function TicketList() {
             <div className={styles.pagination}>
               {/* 🔴 TODO 3: Make Previous go to the previous page and Next go to the next page */}
               <button
-                onClick={() => {}}
+                onClick={() => {setPage(page-1)}}
                 disabled={page === 1}
                 className={styles.pageButton}
               >
@@ -125,7 +149,7 @@ export function TicketList() {
                 Page {page} of {response.pagination.totalPages}
               </span>
               <button
-                onClick={() => {}}
+                onClick={() => {setPage(page+1)}}
                 disabled={page === response.pagination.totalPages}
                 className={styles.pageButton}
               >
