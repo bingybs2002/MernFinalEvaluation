@@ -34,7 +34,7 @@ const API_URL = 'http://localhost:4000/api';
     try{
       const res = await axios.get<ApiResponse<User>>(`${API_URL}/users/login`,{
         username,
-        password,
+        password
       })
       login(res.data.data);
     }catch{

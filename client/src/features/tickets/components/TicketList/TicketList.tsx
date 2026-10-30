@@ -25,7 +25,7 @@ export function TicketList() {
   const [response, setResponse] = useState<PaginatedResponse<Ticket> | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  const debouncedSearch = useDebouncedValue(search, 10);
   useEffect(() => {
     const fetchTickets = async () => {
       setLoading(true);
@@ -34,9 +34,9 @@ export function TicketList() {
         // 🔴 TODO 1: GET `${API_URL}/tickets` with axios, passing the filters and page as query params
         // (search, status, priority, category, assigneeId, sortBy, sortOrder, page, limit: 10).
         // Then store response.data with setResponse.
-        const res = await axios.get<PaginatedResponse<Ticket>>(`${API_URL}/tickets}`,{
+        const res = await axios.get<PaginatedResponse<Ticket>>(`${API_URL}/tickets`,{
           params:{
-            search,
+            search: debouncedSearch,
             status,
             priority,
             category,
